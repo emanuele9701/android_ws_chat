@@ -1,0 +1,120 @@
+package com.example.wschat;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
+import com.example.wschat.Dati.ServiceChat;
+import com.example.wschat.entity.Chat;
+import com.example.wschat.gestureCapture.RecyclerItemClickListener;
+import com.example.wschat.placeholder.ChatItem;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class MainActivity extends AppCompatActivity {
+
+    static ServiceChat sc;
+    static TextView stringChatLoaded;
+    static String textChatLoaded;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        this.sc = APIWs.getClient().create(ServiceChat.class);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadComponents();
+        getCountChats();
+        ping();
+        setOnClickList();
+    }
+
+    private void setOnClickList() {
+        RecyclerView listaRecycler = findViewById(R.id.list);
+        listaRecycler.addOnItemTouchListener(
+                new RecyclerItemClickListener(getApplicationContext(), listaRecycler ,new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override public void onItemClick(View view, int position) {
+                        // do whatever
+                        Toast.makeText(getApplicationContext(),"Item click "+position,Toast.LENGTH_LONG).show();
+                        Intent chatIntent = new Intent(getApplicationContext(),ActivityChat.class);
+                        chatIntent.putExtra("IdListChat",getChatPositionList(position).WsChatId);
+                        startActivity(chatIntent);
+                    }
+
+                    @Override public void onLongItemClick(View view, int position) {
+                        Toast.makeText(getApplicationContext(),"Long Item click "+position,Toast.LENGTH_LONG).show();
+                    }
+                })
+        );
+    }
+
+    private ChatItem getChatPositionList(int position) {
+        ChatItem rt = new ChatItem(null,null,null,null,0);
+        RecyclerView rv = findViewById(R.id.list);
+        List<ChatItem> listItem = ((MyChatRecyclerViewAdapter) rv.getAdapter()).getListItem();
+        rt = listItem.get(position);
+        return rt;
+    }
+
+    private void loadComponents() {
+        MainActivity.stringChatLoaded = findViewById(R.id.stringChatLoaded);
+        this.stringChatLoaded.setText(R.string.chatloaded);
+        MainActivity.textChatLoaded = MainActivity.stringChatLoaded.getText().toString();
+    }
+
+    private void getCountChats() {
+        Call<HashMap<String,Integer>> l = this.sc.countChats();
+        l.enqueue(new Callback<HashMap<String,Integer>>() {
+            @Override
+            public void onResponse(Call<HashMap<String,Integer>> call, Response<HashMap<String,Integer>> response) {
+                HashMap<String,Integer> result = response.body();
+                MainActivity.stringChatLoaded.setText(MainActivity.textChatLoaded + ": "+String.valueOf(result.get("totale").intValue()));
+            }
+
+            @Override
+            public void onFailure(Call<HashMap<String,Integer>> call, Throwable t) {
+                System.out.println("getCountChats Error: "+t.getMessage());
+            }
+        });
+    }
+
+    private boolean ping() {
+        this.sc.ping().enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                try {
+                    String jsonResult = response.body();
+                    ArrayList<String> list = new ArrayList<>();
+                    JSONArray js = new  JSONArray(jsonResult);
+                    Log.d(MainActivity.class+" --- Ping function ","Ok");
+                    Toast.makeText(getApplicationContext(),js.get(0).toString(),Toast.LENGTH_SHORT).show();
+                } catch ( JSONException jsEx) {
+                    Log.e(MainActivity.class+" --- Ping function ",jsEx.getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                System.out.println("Fallito per "+t.getMessage());
+                Toast.makeText(getApplicationContext(),"No connection with service chat",Toast.LENGTH_SHORT).show();
+            }
+        });
+        return true;
+    }
+}

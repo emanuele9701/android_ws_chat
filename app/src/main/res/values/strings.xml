@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">WsChat</string>
+    <string name="chatloaded">Chat caricate</string>
+    <string name="writeMessage">Scrivi messaggio</string>
+    <string name="lblFromMe">Io:</string>
+    <string name="lblFrom">Lui:</string>
+    <string name="errorWriteMessage">Scrivi un messaggio</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/WsChat/app/src/main/res/layout/activity_chat.xml" value="0.36666666666666664" />
+        <entry key="..\:/WsChat/app/src/main/res/layout/activity_main.xml" value="0.5076923076923077" />
+        <entry key="..\:/WsChat/app/src/main/res/layout/fragment_header_chat.xml" value="0.36666666666666664" />
+        <entry key="..\:/WsChat/app/src/main/res/layout/fragment_item.xml" value="0.3197463768115942" />
+        <entry key="..\:/WsChat/app/src/main/res/layout/fragment_item2.xml" value="0.1" />
+        <entry key="..\:/WsChat/app/src/main/res/layout/fragment_item_list.xml" value="0.35260416666666666" />
+        <entry key="..\:/WsChat/app/src/main/res/layout/fragment_item_list2.xml" value="0.35260416666666666" />
+        <entry key="..\:/WsChat/app/src/main/res/layout/fragment_list_messages.xml" value="0.36666666666666664" />
+        <entry key="..\:/WsChat/app/src/main/res/layout/list_message.xml" value="0.36666666666666664" />
+        <entry key="..\:/WsChat/app/src/main/res/layout/message.xml" value="0.2703804347826087" />
+        <entry key="..\:/WsChat/app/src/main/res/layout/message_left.xml" value="0.365625" />
+        <entry key="..\:/WsChat/app/src/main/res/layout/message_rigth.xml" value="0.5" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

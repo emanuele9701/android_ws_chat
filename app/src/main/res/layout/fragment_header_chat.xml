@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HeaderChat">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="36dp">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/profiloImage"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                tools:src="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/infoNomeChat"
+                android:layout_width="222dp"
+                android:layout_height="match_parent"
+                android:text="-" />
+
+        </TableRow>
+    </TableLayout>
+</FrameLayout>
