@@ -4,8 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -38,6 +41,8 @@ public class ActivityChat extends AppCompatActivity {
     EditText messageCompose;
     ListView list_all_message;
     List<Message> all_message;
+    static final int ALTEZZA_IMG_MEX = 300;
+    static final int LARGHEZZA_IMG_MEX = 300;
     private ChannelEvent event;
     static String EVENT_NEW_MESSAGE;
     int chatId;
@@ -194,19 +199,51 @@ public class ActivityChat extends AppCompatActivity {
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             TextView titolo;
+            ImageView imgMexLeft,imgMexRigth;
             Message msg = getItem(position);
             if(msg.getFromMe() ==1 ) {
                 convertView = inflater.inflate(R.layout.message_left, null);
                 titolo = (TextView)convertView.findViewById(R.id.text_left_message);
+
+                imgMexLeft = (ImageView) convertView.findViewById(R.id.imageMsgLeft);
+                if(msg.getNomeImmagine() == null) {
+                    imgMexLeft.setVisibility(View.INVISIBLE);
+                    imgMexLeft.getLayoutParams().height = 0;
+                    imgMexLeft.getLayoutParams().width = 0;
+                } else {
+                    imgMexLeft.setVisibility(View.VISIBLE);
+                    imgMexLeft.setImageBitmap(convertStringToImage(msg.getStream()));
+                    imgMexLeft.getLayoutParams().height = ALTEZZA_IMG_MEX;
+                    imgMexLeft.getLayoutParams().width = LARGHEZZA_IMG_MEX;
+                }
             } else {
                 convertView = inflater.inflate(R.layout.message_rigth, null);
                 titolo = (TextView)convertView.findViewById(R.id.text_rigth_message);
+                imgMexRigth = (ImageView) convertView.findViewById(R.id.imageMsgRigth);
+                if(msg.getNomeImmagine() == null) {
+                    imgMexRigth.setVisibility(View.INVISIBLE);
+                    imgMexRigth.getLayoutParams().height = 0;
+                    imgMexRigth.getLayoutParams().width = 0;
+                } else {
+                    imgMexRigth.setVisibility(View.VISIBLE);
+                    imgMexRigth.setImageBitmap(convertStringToImage(msg.getStream()));
+                    imgMexRigth.getLayoutParams().height = ALTEZZA_IMG_MEX;
+                    imgMexRigth.getLayoutParams().width = LARGHEZZA_IMG_MEX;
+                }
             }
 
             titolo.setText(msg.getBody());
             return convertView;
         }
 
+
+        private Bitmap convertStringToImage(String base64) {
+            byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
+            // Bitmap Image
+            Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+            return bitmap;
+        }
 
 
     }
