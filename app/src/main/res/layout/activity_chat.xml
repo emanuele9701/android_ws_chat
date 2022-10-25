@@ -4,51 +4,64 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
     tools:context=".ActivityChat">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainerView2"
-        android:name="com.example.wschat.HeaderChat"
-        android:layout_width="413dp"
-        android:layout_height="40dp"
+    <Button
+        android:id="@+id/sendMessageButton"
+        style="@android:style/Widget.Button"
+        android:layout_width="215dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="176dp"
+        android:layout_marginEnd="154dp"
+        android:layout_marginBottom="8dp"
+        android:text="Invia"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.582"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/listMessageContainer"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <EditText
+        android:id="@+id/compose_message"
+        android:layout_width="390dp"
+        android:layout_height="81dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="4dp"
+        android:background="#414DD0E1"
+        android:ems="10"
+        android:gravity="start|top"
+        android:hint="@string/writeMessage"
+        android:inputType="textMultiLine"
+        app:layout_constraintBottom_toTopOf="@+id/sendMessageButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.571"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/listMessageContainer" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/listMessageContainer"
         android:name="com.example.wschat.ListMessages"
-        android:layout_width="410dp"
-        android:layout_height="542dp"
+        android:layout_width="386dp"
+        android:layout_height="487dp"
         android:layout_marginTop="4dp"
+        android:layout_marginBottom="7dp"
+        app:layout_constraintBottom_toTopOf="@+id/compose_message"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.48"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragmentContainerView2" />
 
-    <ImageButton
-        android:id="@+id/sendMessageButton"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="@drawable/sendmsgicon"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView2"
+        android:name="com.example.wschat.HeaderChat"
+        android:layout_width="406dp"
+        android:layout_height="39dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="18dp"
+        app:layout_constraintBottom_toTopOf="@+id/listMessageContainer"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.242"
-        app:layout_constraintStart_toEndOf="@+id/compose_message"
-        app:layout_constraintTop_toBottomOf="@+id/listMessageContainer"
-        app:layout_constraintVertical_bias="0.36" />
-
-    <EditText
-        android:id="@+id/compose_message"
-        android:layout_width="348dp"
-        android:layout_height="114dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginEnd="3dp"
-        android:ems="10"
-        android:gravity="start|top"
-        android:inputType="textMultiLine"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/sendMessageButton"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/listMessageContainer"
-        app:layout_constraintVertical_bias="0.097" />
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

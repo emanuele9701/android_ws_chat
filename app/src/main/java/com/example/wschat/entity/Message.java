@@ -9,6 +9,12 @@ public class Message {
     @SerializedName("fromMe")
     private int fromMe;
 
+    @SerializedName("stream")
+    private String stream;
+
+    @SerializedName("nome_immagine")
+    private String nomeImmagine;
+
     public String getBody() {
         return body;
     }
@@ -17,6 +23,13 @@ public class Message {
         return fromMe;
     }
 
+    public String getStream() {
+        return stream;
+    }
+
+    public String getNomeImmagine() {
+        return nomeImmagine;
+    }
 
     public Message(String body, int fromMe) {
         this.body = body;

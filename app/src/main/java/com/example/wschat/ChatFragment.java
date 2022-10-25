@@ -89,7 +89,7 @@ public class ChatFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<List<Chat>> call, Throwable t) {
-                    System.out.println("GetListChat Errorxx: "+t.getMessage());
+                    System.out.println("GetListChat Error: "+t.getMessage());
                 }
             });
 

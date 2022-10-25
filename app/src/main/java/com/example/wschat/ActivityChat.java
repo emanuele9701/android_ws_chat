@@ -1,11 +1,10 @@
 package com.example.wschat;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.DataSetObserver;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,19 +14,17 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.wschat.classes.ChannelEvent;
+import com.example.wschat.classes.MyJSONParse;
 import com.example.wschat.entity.ChatInfo;
 import com.example.wschat.classes.DownloadImage;
 import com.example.wschat.entity.Message;
-
-import java.util.ArrayList;
+import com.pusher.client.channel.SubscriptionEventListener;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,15 +34,18 @@ import retrofit2.Response;
 
 public class ActivityChat extends AppCompatActivity {
 
-    ImageButton btnSendMex;
+    Button btnSendMex;
     EditText messageCompose;
     ListView list_all_message;
     List<Message> all_message;
+    private ChannelEvent event;
+    static String EVENT_NEW_MESSAGE;
     int chatId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+        getWindow().getDecorView().setBackgroundColor(Color.WHITE);
     }
 
     @Override
@@ -54,9 +54,10 @@ public class ActivityChat extends AppCompatActivity {
         Intent i = getIntent();
         chatId = (Integer) i.getExtras().get("IdListChat");
         recuperoInfoChat(chatId);
-        this.btnSendMex = (ImageButton) findViewById(R.id.sendMessageButton);
+        EVENT_NEW_MESSAGE = "App\\Events\\NewMessage_"+String.valueOf(chatId).toString();
+        this.btnSendMex = (Button) findViewById(R.id.sendMessageButton);
         this.messageCompose = (EditText) findViewById(R.id.compose_message);
-        this.messageCompose.setText(R.string.writeMessage);
+        //this.messageCompose.setText(R.string.writeMessage);
         list_all_message = (ListView) findViewById(R.id.allMessages);
 
         messageCompose.setOnTouchListener(new View.OnTouchListener() {
@@ -80,6 +81,35 @@ public class ActivityChat extends AppCompatActivity {
                 }
             }
         });
+        ascoltoEvtNewMessage();
+    }
+
+
+    private void ascoltoEvtNewMessage() {
+        if(MainActivity.pusher.getPuscher() != null) {
+            if(!MainActivity.event.getChannel().equals("messages")) {
+               event = new ChannelEvent("messages",MainActivity.pusher.getPuscher());
+               event.subscribeChannel();
+            } else {
+                event = MainActivity.event;
+            }
+            event.getCanale().bind(EVENT_NEW_MESSAGE, new SubscriptionEventListener() {
+                @Override
+                public void onEvent(com.pusher.client.channel.PusherEvent event) {
+                    // Reload chat
+                    String a = event.getData();
+                    Log.d(ActivityChat.class.toString(),"Stringa passata nell'evento "+a);
+
+                    MyJSONParse mjson = new MyJSONParse(a);
+                    HashMap<String, Integer> result = mjson.parseJSON();
+                    if(result.containsKey("chatId") && result.get("chatId").intValue() > 0) {
+                        recuperoInfoChat(result.get("chatId").intValue());
+                        //list_all_message.setSelection(list_all_message.getAdapter().getCount() - 1);
+                    }
+                }
+            });
+
+        }
     }
 
     private void inviaMessaggio(String messaggio) {
@@ -92,7 +122,7 @@ public class ActivityChat extends AppCompatActivity {
                 if(esito) {
                     // Insert message in list message
                     boolean esitoUpd = aggiornaListMex(new Message(messageCompose.getText().toString(),1));
-                    messageCompose.setText(R.string.writeMessage);
+                    messageCompose.setText("");
                 } else {
                     // Errore
                     Log.e(ActivityChat.class.toString(),"Errore inserimento messaggio nella lista messaggi");
@@ -111,6 +141,7 @@ public class ActivityChat extends AppCompatActivity {
     private boolean aggiornaListMex(Message newMessage) {
         all_message.add(newMessage);
         list_all_message.setAdapter(new CustomAdapter(this,R.id.allMessages,all_message));
+        list_all_message.setSelection(list_all_message.getAdapter().getCount() - 1);
         return true;
     }
 
@@ -119,9 +150,11 @@ public class ActivityChat extends AppCompatActivity {
         all_message = listMex;
         CustomAdapter cAdp = new CustomAdapter(this,R.id.allMessages,listMex);
         list_all_message.setAdapter(cAdp);
+        list_all_message.setSelection(list_all_message.getAdapter().getCount() - 1);
 
     }
     private void recuperoInfoChat(int chatId) {
+        Log.d(ActivityChat.class.toString(),"Recupero info chat");
         Call<ChatInfo> infoChat = MainActivity.sc.infoChat(chatId);
         infoChat.enqueue(new Callback<ChatInfo>() {
             @Override

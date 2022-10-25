@@ -4,12 +4,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.wschat.Dati.ServiceChat;
+import com.example.wschat.classes.ChannelEvent;
+import com.example.wschat.classes.MyJSONParse;
+import com.example.wschat.classes.PusherEvent;
 import com.example.wschat.entity.Chat;
 import com.example.wschat.gestureCapture.RecyclerItemClickListener;
 import com.example.wschat.placeholder.ChatItem;
@@ -24,25 +28,59 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+import com.example.wschat.static_functions.MyStaticFunctions;
+import com.pusher.client.channel.SubscriptionEventListener;
 
+public class MainActivity extends AppCompatActivity {
+    private final String CLUSTER_PUSHER = "eu";
+    private final String APIKEY_PUSHER = "456ef6b739ac3e6f465b";
+    private final String NEWEVENT = "App\\Events\\NewMessage";
     static ServiceChat sc;
     static TextView stringChatLoaded;
     static String textChatLoaded;
+    static TextView infoAppLabel;
+    static ChannelEvent event;
+    static PusherEvent pusher;
+    MyStaticFunctions msf;
+    static boolean darkMode;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.sc = APIWs.getClient().create(ServiceChat.class);
+        msf = new MyStaticFunctions(getApplicationContext());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        darkMode = msf.checkDarkTheme();
+        ping();
         loadComponents();
         getCountChats();
-        ping();
         setOnClickList();
+        loadServices();
+
+    }
+
+    private void loadServices() {
+        pusher = new PusherEvent(CLUSTER_PUSHER,APIKEY_PUSHER);
+        if(pusher.getPuscher() != null) {
+            event = new ChannelEvent("messages",pusher.getPuscher());
+            event.subscribeChannel().bind(NEWEVENT, new SubscriptionEventListener() {
+                @Override
+                public void onEvent(com.pusher.client.channel.PusherEvent event) {
+                    infoAppLabel.setText(R.string.nuovoMessaggioRicevuto);
+                    infoAppLabel.setTextColor(getColor(R.color.mygreen));
+                    HashMap<String,Integer> mjson = new MyJSONParse(event.getData()).parseJSON();
+                }
+            });
+            infoAppLabel.setText(R.string.successPusherConnect);
+            infoAppLabel.setTextColor(getColor(R.color.mygreen));
+        } else {
+            infoAppLabel.setText(R.string.errorPusherConnect);
+            infoAppLabel.setTextColor(getColor(R.color.mygreen));
+        }
     }
 
     private void setOnClickList() {
@@ -51,14 +89,14 @@ public class MainActivity extends AppCompatActivity {
                 new RecyclerItemClickListener(getApplicationContext(), listaRecycler ,new RecyclerItemClickListener.OnItemClickListener() {
                     @Override public void onItemClick(View view, int position) {
                         // do whatever
-                        Toast.makeText(getApplicationContext(),"Item click "+position,Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(),"Item click "+position,Toast.LENGTH_LONG).show();
                         Intent chatIntent = new Intent(getApplicationContext(),ActivityChat.class);
                         chatIntent.putExtra("IdListChat",getChatPositionList(position).WsChatId);
                         startActivity(chatIntent);
                     }
 
                     @Override public void onLongItemClick(View view, int position) {
-                        Toast.makeText(getApplicationContext(),"Long Item click "+position,Toast.LENGTH_LONG).show();
+                        //Toast.makeText(getApplicationContext(),"Long Item click "+position,Toast.LENGTH_LONG).show();
                     }
                 })
         );
@@ -76,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.stringChatLoaded = findViewById(R.id.stringChatLoaded);
         this.stringChatLoaded.setText(R.string.chatloaded);
         MainActivity.textChatLoaded = MainActivity.stringChatLoaded.getText().toString();
+        infoAppLabel = (TextView) findViewById(R.id.AppInfoLabel);
     }
 
     private void getCountChats() {

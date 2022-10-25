@@ -5,6 +5,9 @@
     <string name="lblFromMe">Io:</string>
     <string name="lblFrom">Lui:</string>
     <string name="errorWriteMessage">Scrivi un messaggio</string>
+    <string name="errorPusherConnect">Impossibile ricevere messaggi al momento</string>
+    <string name="successPusherConnect">Ok ricezione messaggi</string>
+    <string name="nuovoMessaggioRicevuto">Hai ricevuto un nuovo messaggio</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
