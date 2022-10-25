@@ -10,5 +10,8 @@
     <string name="nuovoMessaggioRicevuto">Hai ricevuto un nuovo messaggio</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="search_chat">Ricerca una chat</string>
+    <string name="search_btn_dialog">Ricerca</string>
+    <string name="reset_btn">Annulla</string>
     <string name="todo">TODO</string>
 </resources>

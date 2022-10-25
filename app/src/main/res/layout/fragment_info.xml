@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,9 +9,18 @@
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:id="@+id/AppInfoLabel"
-        android:layout_width="match_parent"
-        android:layout_height="35dp"
+        android:layout_width="333dp"
+        android:layout_height="36dp"
         android:textAlignment="center"
-        android:textColor="#FF0000" />
+        android:textColor="#FF0000"
+        app:layout_constraintTop_toTopOf="@+id/imageButton" />
+
+    <ImageButton
+        android:id="@+id/srcBtn"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginLeft="2in"
+        android:src="@android:drawable/ic_menu_search"
+        app:layout_constraintBottom_toBottomOf="@+id/AppInfoLabel" />
 
 </FrameLayout>

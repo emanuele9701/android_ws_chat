@@ -3,18 +3,21 @@ package com.example.wschat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.wschat.Dati.ServiceChat;
 import com.example.wschat.classes.ChannelEvent;
 import com.example.wschat.classes.MyJSONParse;
 import com.example.wschat.classes.PusherEvent;
-import com.example.wschat.entity.Chat;
 import com.example.wschat.gestureCapture.RecyclerItemClickListener;
 import com.example.wschat.placeholder.ChatItem;
 
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     static PusherEvent pusher;
     MyStaticFunctions msf;
     static boolean darkMode;
+    AlertDialog.Builder bldSearch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,6 +119,32 @@ public class MainActivity extends AppCompatActivity {
         this.stringChatLoaded.setText(R.string.chatloaded);
         MainActivity.textChatLoaded = MainActivity.stringChatLoaded.getText().toString();
         infoAppLabel = (TextView) findViewById(R.id.AppInfoLabel);
+        ImageButton srcBtn = (ImageButton) findViewById(R.id.srcBtn);
+        bldSearch = new AlertDialog.Builder(MainActivity.this);
+        //AlertDialog.Builder bld = new AlertDialog.Builder(getApplicationContext());
+        bldSearch.setTitle(R.string.search_chat);
+        final EditText edt = new EditText(MainActivity.this);
+        edt.setInputType(InputType.TYPE_CLASS_TEXT);
+        bldSearch.setView(edt);
+        bldSearch.setPositiveButton(R.string.search_btn_dialog, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.d(MainActivity.class.toString() + " - Dialog ricerca ","Ricerca di "+edt.getText().toString());
+                dialog.cancel();
+            }
+        });
+        bldSearch.setNegativeButton(R.string.reset_btn, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        srcBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bldSearch.show();
+            }
+        });
     }
 
     private void getCountChats() {
