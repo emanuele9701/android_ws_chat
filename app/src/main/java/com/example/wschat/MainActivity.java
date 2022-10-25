@@ -129,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
         bldSearch.setPositiveButton(R.string.search_btn_dialog, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+
                 Log.d(MainActivity.class.toString() + " - Dialog ricerca ","Ricerca di "+edt.getText().toString());
                 dialog.cancel();
             }

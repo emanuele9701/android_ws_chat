@@ -3,6 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/WsChat/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.292" />
+        <entry key="..\:/WsChat/app/src/main/res/drawable/ic_launcher_background.xml" value="0.292" />
         <entry key="..\:/WsChat/app/src/main/res/layout/activity_chat.xml" value="0.26197916666666665" />
         <entry key="..\:/WsChat/app/src/main/res/layout/activity_main.xml" value="0.31657608695652173" />
         <entry key="..\:/WsChat/app/src/main/res/layout/fragment_header_chat.xml" value="0.36666666666666664" />
@@ -16,6 +18,7 @@
         <entry key="..\:/WsChat/app/src/main/res/layout/message.xml" value="0.2703804347826087" />
         <entry key="..\:/WsChat/app/src/main/res/layout/message_left.xml" value="0.365625" />
         <entry key="..\:/WsChat/app/src/main/res/layout/message_rigth.xml" value="0.5" />
+        <entry key="..\:/WsChat/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.292" />
       </map>
     </option>
   </component>
