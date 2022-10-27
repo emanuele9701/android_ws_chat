@@ -30,6 +30,9 @@ public interface ServiceChat {
     @GET("chats/getChatsInfo/{chatId}")
     Call<ChatInfo> infoChat(@Path("chatId") int chatId);
 
+    @GET("chats/search/{what}")
+    Call<List<Chat>> searchChat(@Path("what") String what);
+
     @FormUrlEncoded
     @POST("chats/messages/responseMessage")
     Call<HashMap<String,Object>> rispondi(@Field("chat_id") int chatId, @Field("message") String messaggio);

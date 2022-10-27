@@ -13,5 +13,6 @@
     <string name="search_chat">Ricerca una chat</string>
     <string name="search_btn_dialog">Ricerca</string>
     <string name="reset_btn">Annulla</string>
+    <string name="annulla_ricerca">Ripristina ricerca</string>
     <string name="todo">TODO</string>
 </resources>

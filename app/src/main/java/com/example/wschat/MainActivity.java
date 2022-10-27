@@ -10,19 +10,21 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.TextView;
 import android.widget.Toast;
 import com.example.wschat.Dati.ServiceChat;
 import com.example.wschat.classes.ChannelEvent;
 import com.example.wschat.classes.MyJSONParse;
 import com.example.wschat.classes.PusherEvent;
+import com.example.wschat.entity.Chat;
 import com.example.wschat.gestureCapture.RecyclerItemClickListener;
 import com.example.wschat.placeholder.ChatItem;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,14 +41,14 @@ public class MainActivity extends AppCompatActivity {
     private final String APIKEY_PUSHER = "456ef6b739ac3e6f465b";
     private final String NEWEVENT = "App\\Events\\NewMessage";
     static ServiceChat sc;
-    static TextView stringChatLoaded;
-    static String textChatLoaded;
-    static TextView infoAppLabel;
     static ChannelEvent event;
     static PusherEvent pusher;
     MyStaticFunctions msf;
+
     static boolean darkMode;
-    AlertDialog.Builder bldSearch;
+    static AlertDialog.Builder bldSearch;
+    static List<ChatItem> oldChat;
+    private Button resetSearch;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,16 +76,9 @@ public class MainActivity extends AppCompatActivity {
             event.subscribeChannel().bind(NEWEVENT, new SubscriptionEventListener() {
                 @Override
                 public void onEvent(com.pusher.client.channel.PusherEvent event) {
-                    infoAppLabel.setText(R.string.nuovoMessaggioRicevuto);
-                    infoAppLabel.setTextColor(getColor(R.color.mygreen));
                     HashMap<String,Integer> mjson = new MyJSONParse(event.getData()).parseJSON();
                 }
             });
-            infoAppLabel.setText(R.string.successPusherConnect);
-            infoAppLabel.setTextColor(getColor(R.color.mygreen));
-        } else {
-            infoAppLabel.setText(R.string.errorPusherConnect);
-            infoAppLabel.setTextColor(getColor(R.color.mygreen));
         }
     }
 
@@ -114,36 +109,90 @@ public class MainActivity extends AppCompatActivity {
         return rt;
     }
 
-    private void loadComponents() {
-        MainActivity.stringChatLoaded = findViewById(R.id.stringChatLoaded);
-        this.stringChatLoaded.setText(R.string.chatloaded);
-        MainActivity.textChatLoaded = MainActivity.stringChatLoaded.getText().toString();
-        infoAppLabel = (TextView) findViewById(R.id.AppInfoLabel);
-        ImageButton srcBtn = (ImageButton) findViewById(R.id.srcBtn);
-        bldSearch = new AlertDialog.Builder(MainActivity.this);
-        //AlertDialog.Builder bld = new AlertDialog.Builder(getApplicationContext());
-        bldSearch.setTitle(R.string.search_chat);
-        final EditText edt = new EditText(MainActivity.this);
-        edt.setInputType(InputType.TYPE_CLASS_TEXT);
-        bldSearch.setView(edt);
-        bldSearch.setPositiveButton(R.string.search_btn_dialog, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
+    private List<ChatItem> getChatFromString(String ricerca) {
+        List<ChatItem> listItemSearched = new ArrayList<>();
+        RecyclerView rv = findViewById(R.id.list);
+        List<ChatItem> listItem = ((MyChatRecyclerViewAdapter) rv.getAdapter()).getListItem();
 
-                Log.d(MainActivity.class.toString() + " - Dialog ricerca ","Ricerca di "+edt.getText().toString());
-                dialog.cancel();
+        for (ChatItem c :
+                listItem) {
+            if(c.content.contains(ricerca)) {
+                listItemSearched.add(c);
             }
-        });
-        bldSearch.setNegativeButton(R.string.reset_btn, new DialogInterface.OnClickListener() {
+        }
+
+        // Controllo anche in db
+        Call<List<Chat>> callSearchChat = MainActivity.sc.searchChat(ricerca);
+        callSearchChat.enqueue(new Callback<List<Chat>>() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
+            public void onResponse(Call<List<Chat>> call, Response<List<Chat>> response) {
+                List<Chat> listaResponse = response.body();
+                for (Chat cList :
+                    listaResponse) {
+                   if(cList.getName().toLowerCase().contains(ricerca.toLowerCase())) {
+                        ChatItem c = new ChatItem(null,cList.getName(),cList.getLastMessage(),cList.getData(),cList.getChatId());
+                        if(!listItemSearched.contains(c)) {
+                            listItemSearched.add(c);
+                        }
+                   }
+                }
+                ChatFragment.recyclerView.setAdapter(new MyChatRecyclerViewAdapter(listItemSearched));
+                resetSearch.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onFailure(Call<List<Chat>> call, Throwable t) {
+                Log.e(MainActivity.class.toString(),"Errore recupero chat ricercata "+t.getMessage());
             }
         });
-        srcBtn.setOnClickListener(new View.OnClickListener() {
+
+        return listItemSearched;
+    }
+
+    private void loadComponents() {
+        ImageButton srcBtn = (ImageButton) findViewById(R.id.srcBtn);
+
+        resetSearch = (Button) findViewById(R.id.resetSearch);
+        //AlertDialog.Builder bld = new AlertDialog.Builder(getApplicationContext());
+         srcBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(bldSearch == null) {
+                    bldSearch = new AlertDialog.Builder(MainActivity.this);
+                }
+                final EditText edt_ricerca = new EditText(MainActivity.this);
+                edt_ricerca.setInputType(InputType.TYPE_CLASS_TEXT);
+                bldSearch.setView(edt_ricerca);
+                bldSearch.setTitle(R.string.search_chat);
+
+                bldSearch.setPositiveButton(R.string.search_btn_dialog, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String valoreRicercato = edt_ricerca.getText().toString();
+                        getChatFromString(valoreRicercato);
+                        dialog.cancel();
+                    }
+                });
+                bldSearch.setNegativeButton(R.string.reset_btn, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
                 bldSearch.show();
+            }
+        });
+
+        resetSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(oldChat != null) {
+                    ChatFragment.recyclerView.setAdapter(new MyChatRecyclerViewAdapter(oldChat));
+                    resetSearch.setVisibility(View.INVISIBLE);
+                } else {
+                    Toast.makeText(getApplicationContext(),"Verificato un problema nel ripristino della lista",Toast.LENGTH_LONG).show();
+                }
             }
         });
     }
@@ -154,7 +203,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<HashMap<String,Integer>> call, Response<HashMap<String,Integer>> response) {
                 HashMap<String,Integer> result = response.body();
-                MainActivity.stringChatLoaded.setText(MainActivity.textChatLoaded + ": "+String.valueOf(result.get("totale").intValue()));
             }
 
             @Override

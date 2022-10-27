@@ -27,6 +27,7 @@ import retrofit2.Response;
  */
 public class ChatFragment extends Fragment {
 
+    static RecyclerView recyclerView;
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
@@ -67,7 +68,7 @@ public class ChatFragment extends Fragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
@@ -83,6 +84,9 @@ public class ChatFragment extends Fragment {
                     for (Chat c :
                             listaChat) {
                         listaItemChat.add(new ChatItem(null,c.getName(),c.getLastMessage(),c.getData(),c.getChatId()));
+                    }
+                    if(MainActivity.oldChat == null) {
+                        MainActivity.oldChat = listaItemChat;
                     }
                     recyclerView.setAdapter(new MyChatRecyclerViewAdapter(listaItemChat));
                 }

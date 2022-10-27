@@ -15,12 +15,4 @@
         android:textColor="#FF0000"
         app:layout_constraintTop_toTopOf="@+id/imageButton" />
 
-    <ImageButton
-        android:id="@+id/srcBtn"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginLeft="2in"
-        android:src="@android:drawable/ic_menu_search"
-        app:layout_constraintBottom_toBottomOf="@+id/AppInfoLabel" />
-
 </FrameLayout>
