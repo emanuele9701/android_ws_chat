@@ -9,7 +9,7 @@ public class Chat {
     private String lastMessage;
     @SerializedName("hasNewMex")
     private int newMessage;
-    @SerializedName("chat_id")
+    @SerializedName("id")
     private int chatId;
     @SerializedName("name")
     private String name;
