@@ -2,6 +2,8 @@ package com.example.wschat.entity;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 public class Message {
 
     @SerializedName("body")
@@ -9,11 +11,11 @@ public class Message {
     @SerializedName("fromMe")
     private int fromMe;
 
-    @SerializedName("stream")
-    private String stream;
+    @SerializedName("media")
+    private MediaMessage mediaMessage;
 
-    @SerializedName("nome_immagine")
-    private String nomeImmagine;
+    @SerializedName("timestamp_message")
+    private String dateMessage;
 
     public String getBody() {
         return body;
@@ -23,12 +25,12 @@ public class Message {
         return fromMe;
     }
 
-    public String getStream() {
-        return stream;
+    public MediaMessage getMediaMessage() {
+        return mediaMessage;
     }
 
-    public String getNomeImmagine() {
-        return nomeImmagine;
+    public String getDateMessage() {
+        return dateMessage;
     }
 
     public Message(String body, int fromMe) {

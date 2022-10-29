@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private Button resetSearch;
     static RecyclerView mainRecyclerView;
     ImageButton refreshChat;
+    public static final String urlWs = "http://localhost/bot_whatsapp/api/whatsapp_chats_api_v3/public/api/";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

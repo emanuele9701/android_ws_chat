@@ -7,7 +7,11 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.MediaDataSource;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -28,6 +33,10 @@ import com.example.wschat.entity.ChatInfo;
 import com.example.wschat.classes.DownloadImage;
 import com.example.wschat.entity.Message;
 import com.pusher.client.channel.SubscriptionEventListener;
+
+import java.io.FileDescriptor;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.List;
 
@@ -182,18 +191,57 @@ public class ActivityChat extends AppCompatActivity {
             @Override
             public void onFailure(Call<ChatInfo> call, Throwable t) {
                 Toast.makeText(getApplicationContext(),"Info non recuperate",Toast.LENGTH_LONG).show();
+                Log.e(this.toString(),"Info non recuperate per "+t.getMessage());
             }
         });
     }
 
+
+
     private class CustomAdapter extends ArrayAdapter<Message> {
         List<Message> mex;
+        ImageButton btnRigthAudio;
+        Context ctx;
         public CustomAdapter(Context context, int textViewResourceId,
                              List <Message> objects) {
             super(context, textViewResourceId, objects);
             this.mex = objects;
+            ctx = context;
         }
 
+
+        private void playAudio(String url){
+            final Handler handler =new Handler();
+
+            final Thread audioThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    final MediaPlayer mediaPlayer = new MediaPlayer();
+
+                    Uri myUri = Uri.parse(url);
+                    try {
+                        mediaPlayer.setDataSource(ctx, myUri);
+                        mediaPlayer.prepare();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mediaPlayer.isPlaying()) {
+                                mediaPlayer.pause();
+                            } else {
+                                if (mediaPlayer.getCurrentPosition() > 0)
+                                    mediaPlayer.seekTo(0);
+                                mediaPlayer.start();
+                            }
+                        }
+                    });
+                }
+            });
+            audioThread.run();
+        }
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) getContext()
@@ -207,29 +255,49 @@ public class ActivityChat extends AppCompatActivity {
                 titolo = (TextView)convertView.findViewById(R.id.text_left_message);
 
                 imgMexLeft = (ImageView) convertView.findViewById(R.id.imageMsgLeft);
-                if(msg.getNomeImmagine() == null) {
+                if(msg.getMediaMessage() == null) {
                     imgMexLeft.setVisibility(View.INVISIBLE);
                     imgMexLeft.getLayoutParams().height = 0;
                     imgMexLeft.getLayoutParams().width = 0;
-                } else {
+                } else if (msg.getMediaMessage().getTipo().equals("image")) {
                     imgMexLeft.setVisibility(View.VISIBLE);
-                    imgMexLeft.setImageBitmap(convertStringToImage(msg.getStream()));
+                    imgMexLeft.setImageBitmap(convertStringToImage(msg.getMediaMessage().getStream()));
                     imgMexLeft.getLayoutParams().height = ALTEZZA_IMG_MEX;
                     imgMexLeft.getLayoutParams().width = LARGHEZZA_IMG_MEX;
                 }
+
             } else {
                 convertView = inflater.inflate(R.layout.message_rigth, null);
                 titolo = (TextView)convertView.findViewById(R.id.text_rigth_message);
                 imgMexRigth = (ImageView) convertView.findViewById(R.id.imageMsgRigth);
-                if(msg.getNomeImmagine() == null) {
+                if(msg.getMediaMessage() == null) {
                     imgMexRigth.setVisibility(View.INVISIBLE);
                     imgMexRigth.getLayoutParams().height = 0;
                     imgMexRigth.getLayoutParams().width = 0;
-                } else {
+                }else if (msg.getMediaMessage().getTipo().equals("image")) {
                     imgMexRigth.setVisibility(View.VISIBLE);
-                    imgMexRigth.setImageBitmap(convertStringToImage(msg.getStream()));
+                    imgMexRigth.setImageBitmap(convertStringToImage(msg.getMediaMessage().getStream()));
                     imgMexRigth.getLayoutParams().height = ALTEZZA_IMG_MEX;
                     imgMexRigth.getLayoutParams().width = LARGHEZZA_IMG_MEX;
+                }
+                if (msg.getMediaMessage() != null && msg.getMediaMessage().getTipo().equals("audio")) {
+                    // To do
+                    btnRigthAudio = (ImageButton) findViewById(R.id.btnSoundRigth);
+                    btnRigthAudio.setVisibility(View.VISIBLE);
+                    btnRigthAudio.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            try {
+                                OutputStreamWriter otpW = new OutputStreamWriter(ctx.openFileOutput(msg.getMediaMessage().getNome(),ctx.MODE_PRIVATE));
+                                otpW.write(java.util.Base64.getDecoder().decode(msg.getMediaMessage().getStream()).toString());
+                                otpW.close();
+                            } catch (IOException ex) {
+
+                            }
+                            playAudio(MainActivity.urlWs + "media/audio/play/"+msg.getMediaMessage().getId());
+                        }
+                    });
+
                 }
             }
 
