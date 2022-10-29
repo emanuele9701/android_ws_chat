@@ -158,6 +158,7 @@ public class ActivityChat extends AppCompatActivity {
         list_all_message.setSelection(list_all_message.getAdapter().getCount() - 1);
 
     }
+
     private void recuperoInfoChat(int chatId) {
         Log.d(ActivityChat.class.toString(),"Recupero info chat");
         Call<ChatInfo> infoChat = MainActivity.sc.infoChat(chatId);

@@ -74,6 +74,9 @@ public class ChatFragment extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
+            if(MainActivity.mainRecyclerView == null) {
+                MainActivity.mainRecyclerView = recyclerView;
+            }
             Call<List<Chat>> l = MainActivity.sc.listChats();
             l.enqueue(new Callback<List<Chat>>() {
                 @Override

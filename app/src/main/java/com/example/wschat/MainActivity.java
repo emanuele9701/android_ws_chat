@@ -44,11 +44,13 @@ public class MainActivity extends AppCompatActivity {
     static ChannelEvent event;
     static PusherEvent pusher;
     MyStaticFunctions msf;
-
+    Call<List<Chat>> clListChat;
     static boolean darkMode;
     static AlertDialog.Builder bldSearch;
     static List<ChatItem> oldChat;
     private Button resetSearch;
+    static RecyclerView mainRecyclerView;
+    ImageButton refreshChat;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         getCountChats();
         setOnClickList();
         loadServices();
-
+        clListChat = sc.listChats();
     }
 
     private void loadServices() {
@@ -76,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             event.subscribeChannel().bind(NEWEVENT, new SubscriptionEventListener() {
                 @Override
                 public void onEvent(com.pusher.client.channel.PusherEvent event) {
-                    HashMap<String,Integer> mjson = new MyJSONParse(event.getData()).parseJSON();
+                    reloadListChats();
                 }
             });
         }
@@ -99,6 +101,33 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
         );
+    }
+
+    private void reloadListChats() {
+        clListChat.enqueue(new Callback<List<Chat>>() {
+            @Override
+            public void onResponse(Call<List<Chat>> call, Response<List<Chat>> response) {
+                List<Chat> listaChat = response.body();
+                List<ChatItem> listaItemChat = new ArrayList<>();
+
+                for (Chat c :
+                        listaChat) {
+                    listaItemChat.add(new ChatItem(null,c.getName(),c.getLastMessage(),c.getData(),c.getChatId()));
+                }
+                if(MainActivity.oldChat == null) {
+                    MainActivity.oldChat = listaItemChat;
+                }
+                mainRecyclerView.setAdapter(new MyChatRecyclerViewAdapter(listaItemChat));
+                if(refreshChat.getVisibility() == View.INVISIBLE) {
+                    refreshChat.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Chat>> call, Throwable t) {
+                System.out.println("GetListChat Error: "+t.getMessage());
+            }
+        });
     }
 
     private ChatItem getChatPositionList(int position) {
@@ -151,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadComponents() {
         ImageButton srcBtn = (ImageButton) findViewById(R.id.srcBtn);
-
+        refreshChat = (ImageButton) findViewById(R.id.btnRefreshChat);
         resetSearch = (Button) findViewById(R.id.resetSearch);
         //AlertDialog.Builder bld = new AlertDialog.Builder(getApplicationContext());
          srcBtn.setOnClickListener(new View.OnClickListener() {
@@ -195,6 +224,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        refreshChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(MainActivity.class.toString(),"Refresh button activeted");
+                reloadListChats();
+                refreshChat.setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
     private void getCountChats() {
@@ -221,7 +259,7 @@ public class MainActivity extends AppCompatActivity {
                     ArrayList<String> list = new ArrayList<>();
                     JSONArray js = new  JSONArray(jsonResult);
                     Log.d(MainActivity.class+" --- Ping function ","Ok");
-                    Toast.makeText(getApplicationContext(),js.get(0).toString(),Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getApplicationContext(),js.get(0).toString(),Toast.LENGTH_SHORT).show();
                 } catch ( JSONException jsEx) {
                     Log.e(MainActivity.class+" --- Ping function ",jsEx.getMessage());
                 }
