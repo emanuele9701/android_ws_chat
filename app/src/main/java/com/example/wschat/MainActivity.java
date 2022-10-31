@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         getCountChats();
         setOnClickList();
         loadServices();
-        clListChat = sc.listChats();
+
     }
 
     private void loadServices() {
@@ -105,6 +105,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void reloadListChats() {
+        if(clListChat != null) {
+            clListChat = null;
+        }
+        clListChat = sc.listChats();
         clListChat.enqueue(new Callback<List<Chat>>() {
             @Override
             public void onResponse(Call<List<Chat>> call, Response<List<Chat>> response) {

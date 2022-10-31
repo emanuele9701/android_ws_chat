@@ -205,7 +205,6 @@ public class ActivityChat extends AppCompatActivity {
 
     private class CustomAdapter extends ArrayAdapter<Message> {
         List<Message> mex;
-        ImageButton btnRigthAudio;
         Context ctx;
         public CustomAdapter(Context context, int textViewResourceId,
                              List <Message> objects) {
@@ -246,12 +245,12 @@ public class ActivityChat extends AppCompatActivity {
                 if(mediaPlayer != null) {
                     if(mediaPlayer.isPlaying()) {
                         mediaPlayer.stop();
-                        mediaPlayer.reset();
-                        mediaPlayer.release();
                     }
-                } else {
-                    mediaPlayer = new MediaPlayer();
+                    mediaPlayer.reset();
+                    mediaPlayer.release();
+                    mediaPlayer = null;
                 }
+                mediaPlayer = new MediaPlayer();
                 mediaPlayer.setDataSource(pathAudio);
                 mediaPlayer.prepare();
                 mediaPlayer.start();
@@ -268,7 +267,9 @@ public class ActivityChat extends AppCompatActivity {
             TextView titolo;
             ImageView imgMexLeft,imgMexRigth;
             Message msg = getItem(position);
+            ImageButton btnRigthAudio;
             if(msg.getFromMe() ==1 ) {
+                // Messaggio inviato
                 convertView = inflater.inflate(R.layout.message_left, null);
                 titolo = (TextView)convertView.findViewById(R.id.text_left_message);
 
@@ -285,40 +286,35 @@ public class ActivityChat extends AppCompatActivity {
                 }
 
             } else {
+                // Messaggio ricevuto
                 convertView = inflater.inflate(R.layout.message_rigth, null);
                 titolo = (TextView)convertView.findViewById(R.id.text_rigth_message);
                 imgMexRigth = (ImageView) convertView.findViewById(R.id.imageMsgRigth);
+                btnRigthAudio = (ImageButton) convertView.findViewById(R.id.btnSoundRigth);
+                if(btnRigthAudio != null) {
+                    btnRigthAudio.getLayoutParams().width = 0;
+                    btnRigthAudio.getLayoutParams().height = 0;
+                    btnRigthAudio.setVisibility(View.INVISIBLE);
+                }
                 if(msg.getMediaMessage() == null) {
                     imgMexRigth.setVisibility(View.INVISIBLE);
                     imgMexRigth.getLayoutParams().height = 0;
                     imgMexRigth.getLayoutParams().width = 0;
-                }else if (msg.getMediaMessage().getTipo().equals("image")) {
+                }else if (msg.getMediaMessage() != null && msg.getMediaMessage().getTipo().equals("image")) {
                     imgMexRigth.setVisibility(View.VISIBLE);
                     imgMexRigth.setImageBitmap(convertStringToImage(msg.getMediaMessage().getStream()));
                     imgMexRigth.getLayoutParams().height = ALTEZZA_IMG_MEX;
                     imgMexRigth.getLayoutParams().width = LARGHEZZA_IMG_MEX;
-                }
-                if (msg.getMediaMessage() != null && msg.getMediaMessage().getTipo().equals("audio")) {
+                } else if (msg.getMediaMessage() != null && msg.getMediaMessage().getTipo().equals("audio")) {
                     // To do
-                    btnRigthAudio = (ImageButton) findViewById(R.id.btnSoundRigth);
+                    imgMexRigth.getLayoutParams().height = 0;
+                    imgMexRigth.getLayoutParams().width = 0;
+                    btnRigthAudio.getLayoutParams().width = ALTEZZA_IMG_MEX;
+                    btnRigthAudio.getLayoutParams().height = LARGHEZZA_IMG_MEX;
                     btnRigthAudio.setVisibility(View.VISIBLE);
                     btnRigthAudio.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-                                // pausing the media player if media player
-                                // is playing we are calling below line to
-                                // stop our media player.
-                                mediaPlayer.stop();
-                                mediaPlayer.reset();
-                                mediaPlayer.release();
-
-                                // below line is to display a message
-                                // when media player is paused.
-                                Toast.makeText(ActivityChat.this, "Audio has been paused", Toast.LENGTH_SHORT).show();
-                            }
-                            // Save audio
-
                             msg.getMediaMessage().setLocalPathSaved(saveAudio(msg));
                             if(audioCurrentPlaying == null) {
                                 audioCurrentPlaying = msg.getMediaMessage().getLocalPathSaved();
@@ -331,7 +327,6 @@ public class ActivityChat extends AppCompatActivity {
                             playAudio(msg.getMediaMessage().getLocalPathSaved());
                         }
                     });
-
                 }
             }
 
