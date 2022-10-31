@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.media.AudioManager;
 import android.media.MediaDataSource;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -34,7 +35,9 @@ import com.example.wschat.classes.DownloadImage;
 import com.example.wschat.entity.Message;
 import com.pusher.client.channel.SubscriptionEventListener;
 
+import java.io.File;
 import java.io.FileDescriptor;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
@@ -54,6 +57,8 @@ public class ActivityChat extends AppCompatActivity {
     static final int LARGHEZZA_IMG_MEX = 300;
     private ChannelEvent event;
     static String EVENT_NEW_MESSAGE;
+    MediaPlayer mediaPlayer;
+    String audioCurrentPlaying;
     int chatId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -210,38 +215,51 @@ public class ActivityChat extends AppCompatActivity {
         }
 
 
-        private void playAudio(String url){
-            final Handler handler =new Handler();
-
-            final Thread audioThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    final MediaPlayer mediaPlayer = new MediaPlayer();
-
-                    Uri myUri = Uri.parse(url);
-                    try {
-                        mediaPlayer.setDataSource(ctx, myUri);
-                        mediaPlayer.prepare();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mediaPlayer.isPlaying()) {
-                                mediaPlayer.pause();
-                            } else {
-                                if (mediaPlayer.getCurrentPosition() > 0)
-                                    mediaPlayer.seekTo(0);
-                                mediaPlayer.start();
-                            }
-                        }
-                    });
+        private String saveAudio(Message msg){
+            String pathToSave = getFilesDir().getPath() + "/" + msg.getMediaMessage().getNome();
+            File file = new File(pathToSave);
+            try {
+                if(!file.exists()) {
+                    file.createNewFile();
+                } else {
+                    file.delete();
+                    file.createNewFile();
                 }
-            });
-            audioThread.run();
+                FileOutputStream fwrite = new FileOutputStream(pathToSave);
+                fwrite.write(java.util.Base64.getDecoder().decode(msg.getMediaMessage().getStream()));
+            } catch (IOException ex) {
+                Log.e(ActivityChat.class.toString(),"Creazione audio file block for: "+ex.getMessage());
+            }
+
+            return pathToSave;
         }
+
+        private void playAudio(String pathAudio) {
+
+            try {
+                File f = new File(pathAudio);
+                if(!f.exists()) {
+                    Toast.makeText(getApplicationContext(),"Problema in riproduzione audio",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if(mediaPlayer != null) {
+                    if(mediaPlayer.isPlaying()) {
+                        mediaPlayer.stop();
+                        mediaPlayer.reset();
+                        mediaPlayer.release();
+                    }
+                } else {
+                    mediaPlayer = new MediaPlayer();
+                }
+                mediaPlayer.setDataSource(pathAudio);
+                mediaPlayer.prepare();
+                mediaPlayer.start();
+            } catch (IOException ex) {
+                Log.e(this.toString(),"Errore in riproduzione audio "+ex.getMessage());
+            }
+        }
+
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) getContext()
@@ -287,14 +305,30 @@ public class ActivityChat extends AppCompatActivity {
                     btnRigthAudio.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            try {
-                                OutputStreamWriter otpW = new OutputStreamWriter(ctx.openFileOutput(msg.getMediaMessage().getNome(),ctx.MODE_PRIVATE));
-                                otpW.write(java.util.Base64.getDecoder().decode(msg.getMediaMessage().getStream()).toString());
-                                otpW.close();
-                            } catch (IOException ex) {
+                            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                                // pausing the media player if media player
+                                // is playing we are calling below line to
+                                // stop our media player.
+                                mediaPlayer.stop();
+                                mediaPlayer.reset();
+                                mediaPlayer.release();
 
+                                // below line is to display a message
+                                // when media player is paused.
+                                Toast.makeText(ActivityChat.this, "Audio has been paused", Toast.LENGTH_SHORT).show();
                             }
-                            playAudio(MainActivity.urlWs + "media/audio/play/"+msg.getMediaMessage().getId());
+                            // Save audio
+
+                            msg.getMediaMessage().setLocalPathSaved(saveAudio(msg));
+                            if(audioCurrentPlaying == null) {
+                                audioCurrentPlaying = msg.getMediaMessage().getLocalPathSaved();
+                            } else if(!audioCurrentPlaying.equals(msg.getMediaMessage().getLocalPathSaved())) {
+                                File fcurrent = new File(audioCurrentPlaying);
+                                if(fcurrent.exists()) {
+                                    fcurrent.delete();
+                                }
+                            }
+                            playAudio(msg.getMediaMessage().getLocalPathSaved());
                         }
                     });
 

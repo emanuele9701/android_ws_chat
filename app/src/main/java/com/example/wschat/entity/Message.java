@@ -17,6 +17,9 @@ public class Message {
     @SerializedName("timestamp_message")
     private String dateMessage;
 
+    @SerializedName("mediaFile")
+    private int mediaId;
+
     public String getBody() {
         return body;
     }
@@ -31,6 +34,10 @@ public class Message {
 
     public String getDateMessage() {
         return dateMessage;
+    }
+
+    public int getMediaId() {
+        return mediaId;
     }
 
     public Message(String body, int fromMe) {

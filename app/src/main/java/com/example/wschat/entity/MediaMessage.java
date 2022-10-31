@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 public class MediaMessage {
 
+    private String localPathSaved;
+
     @SerializedName("id")
     private int id;
 
@@ -31,5 +33,13 @@ public class MediaMessage {
 
     public int getId() {
         return id;
+    }
+
+    public String getLocalPathSaved() {
+        return localPathSaved;
+    }
+
+    public void setLocalPathSaved(String localPathSaved) {
+        this.localPathSaved = localPathSaved;
     }
 }
