@@ -276,6 +276,9 @@ public class ActivityChat extends AppCompatActivity {
                 printMeMessage(convertView,msg);
             } else {
                 convertView = inflater.inflate(R.layout.message_rigth, null);
+                TextView labelFrom = (TextView) convertView.findViewById(R.id.labelFrom);
+
+                labelFrom.setText(msg.getMittente());
                 printOtherMessage(convertView,msg);
                 // Messaggio ricevuto
             }
@@ -346,8 +349,12 @@ public class ActivityChat extends AppCompatActivity {
             ImageView imgMexRigth;
             TextView titolo = (TextView)cw.findViewById(R.id.text_rigth_message);
             TextView dateMessage = (TextView) cw.findViewById(R.id.dateRigthMessage);
+
+
             imgMexRigth = (ImageView) cw.findViewById(R.id.imageMsgRigth);
             btnRigthAudio = (ImageButton) cw.findViewById(R.id.btnSoundRigth);
+
+
             if(btnRigthAudio != null) {
                 btnRigthAudio.getLayoutParams().width = 0;
                 btnRigthAudio.getLayoutParams().height = 0;

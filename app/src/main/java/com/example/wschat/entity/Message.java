@@ -20,6 +20,9 @@ public class Message {
     @SerializedName("mediaFile")
     private int mediaId;
 
+    @SerializedName("mittente")
+    private String mittente;
+
     public String getBody() {
         return body;
     }
@@ -38,6 +41,10 @@ public class Message {
 
     public int getMediaId() {
         return mediaId;
+    }
+
+    public String getMittente() {
+        return mittente;
     }
 
     public Message(String body, int fromMe) {
