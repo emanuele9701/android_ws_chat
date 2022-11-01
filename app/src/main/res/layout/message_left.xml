@@ -4,6 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
+    <ImageButton
+        android:id="@+id/btnSoundLeft"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageMsgLeft"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="3dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginRight="2dp"
+        app:srcCompat="@android:drawable/ic_media_play" />
+
     <TextView
         android:id="@+id/labelFromMe"
         android:layout_width="wrap_content"
@@ -19,27 +31,38 @@
 
     <TextView
         android:id="@+id/text_left_message"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imageMsgLeft"
+        android:layout_below="@+id/btnSoundLeft"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginStart="-1dp"
-        android:layout_marginTop="1dp"
-        android:layout_marginEnd="-1dp"
-        android:layout_marginRight="-1dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
         android:text=""
         android:textAlignment="viewEnd" />
 
     <ImageView
         android:id="@+id/imageMsgLeft"
-        android:layout_width="13dp"
-        android:layout_height="12dp"
+        android:layout_width="75dp"
+        android:layout_height="54dp"
         android:layout_below="@+id/labelFromMe"
         android:layout_alignParentEnd="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="3dp" />
+
+    <TextView
+        android:id="@+id/date_left_mex"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_left_message"
+        android:layout_alignParentEnd="true"
         android:layout_marginTop="1dp"
-        android:layout_marginEnd="4dp" />
+        android:layout_marginEnd="1dp"
+        android:text="TextView"
+        android:textSize="8sp" />
 
 </RelativeLayout>

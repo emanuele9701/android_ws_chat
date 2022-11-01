@@ -29,12 +29,12 @@
 
     <TextView
         android:id="@+id/text_rigth_message"
-        android:layout_width="wrap_content"
+        android:layout_width="398dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/btnSoundRigth"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="7dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginStart="6dp"
+        android:layout_marginTop="2dp"
         android:textAlignment="viewStart" />
 
     <ImageButton
@@ -45,6 +45,18 @@
         android:layout_alignParentStart="true"
         android:layout_marginStart="6dp"
         android:layout_marginTop="2dp"
-        app:srcCompat="@android:drawable/ic_media_play" />
+        app:srcCompat="@android:drawable/ic_media_play"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <TextView
+        android:id="@+id/dateRigthMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/text_rigth_message"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="1dp"
+        android:text="TextView"
+        android:textSize="8sp" />
 
 </RelativeLayout>

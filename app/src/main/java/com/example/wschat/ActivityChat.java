@@ -55,6 +55,8 @@ public class ActivityChat extends AppCompatActivity {
     List<Message> all_message;
     static final int ALTEZZA_IMG_MEX = 300;
     static final int LARGHEZZA_IMG_MEX = 300;
+    static final int ALTEZZA_AUD = 150;
+    static final int LARGHEZZA_AUD = 150;
     private ChannelEvent event;
     static String EVENT_NEW_MESSAGE;
     MediaPlayer mediaPlayer;
@@ -179,6 +181,7 @@ public class ActivityChat extends AppCompatActivity {
         infoChat.enqueue(new Callback<ChatInfo>() {
             @Override
             public void onResponse(Call<ChatInfo> call, Response<ChatInfo> response) {
+                Log.d(ActivityChat.class.toString(),"Recupero info chat: OK");
                 ChatInfo cInfo = response.body();
                 //Toast.makeText(getApplicationContext(),"Info recuperate",Toast.LENGTH_LONG).show();
                 ImageView imageProfilo = (ImageView) findViewById(R.id.profiloImage);
@@ -234,7 +237,6 @@ public class ActivityChat extends AppCompatActivity {
         }
 
         private void playAudio(String pathAudio) {
-
             try {
                 File f = new File(pathAudio);
                 if(!f.exists()) {
@@ -264,73 +266,16 @@ public class ActivityChat extends AppCompatActivity {
             LayoutInflater inflater = (LayoutInflater) getContext()
                     .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-            TextView titolo;
-            ImageView imgMexLeft,imgMexRigth;
             Message msg = getItem(position);
-            ImageButton btnRigthAudio;
             if(msg.getFromMe() ==1 ) {
                 // Messaggio inviato
                 convertView = inflater.inflate(R.layout.message_left, null);
-                titolo = (TextView)convertView.findViewById(R.id.text_left_message);
-
-                imgMexLeft = (ImageView) convertView.findViewById(R.id.imageMsgLeft);
-                if(msg.getMediaMessage() == null) {
-                    imgMexLeft.setVisibility(View.INVISIBLE);
-                    imgMexLeft.getLayoutParams().height = 0;
-                    imgMexLeft.getLayoutParams().width = 0;
-                } else if (msg.getMediaMessage().getTipo().equals("image")) {
-                    imgMexLeft.setVisibility(View.VISIBLE);
-                    imgMexLeft.setImageBitmap(convertStringToImage(msg.getMediaMessage().getStream()));
-                    imgMexLeft.getLayoutParams().height = ALTEZZA_IMG_MEX;
-                    imgMexLeft.getLayoutParams().width = LARGHEZZA_IMG_MEX;
-                }
-
+                printMeMessage(convertView,msg);
             } else {
-                // Messaggio ricevuto
                 convertView = inflater.inflate(R.layout.message_rigth, null);
-                titolo = (TextView)convertView.findViewById(R.id.text_rigth_message);
-                imgMexRigth = (ImageView) convertView.findViewById(R.id.imageMsgRigth);
-                btnRigthAudio = (ImageButton) convertView.findViewById(R.id.btnSoundRigth);
-                if(btnRigthAudio != null) {
-                    btnRigthAudio.getLayoutParams().width = 0;
-                    btnRigthAudio.getLayoutParams().height = 0;
-                    btnRigthAudio.setVisibility(View.INVISIBLE);
-                }
-                if(msg.getMediaMessage() == null) {
-                    imgMexRigth.setVisibility(View.INVISIBLE);
-                    imgMexRigth.getLayoutParams().height = 0;
-                    imgMexRigth.getLayoutParams().width = 0;
-                }else if (msg.getMediaMessage() != null && msg.getMediaMessage().getTipo().equals("image")) {
-                    imgMexRigth.setVisibility(View.VISIBLE);
-                    imgMexRigth.setImageBitmap(convertStringToImage(msg.getMediaMessage().getStream()));
-                    imgMexRigth.getLayoutParams().height = ALTEZZA_IMG_MEX;
-                    imgMexRigth.getLayoutParams().width = LARGHEZZA_IMG_MEX;
-                } else if (msg.getMediaMessage() != null && msg.getMediaMessage().getTipo().equals("audio")) {
-                    // To do
-                    imgMexRigth.getLayoutParams().height = 0;
-                    imgMexRigth.getLayoutParams().width = 0;
-                    btnRigthAudio.getLayoutParams().width = ALTEZZA_IMG_MEX;
-                    btnRigthAudio.getLayoutParams().height = LARGHEZZA_IMG_MEX;
-                    btnRigthAudio.setVisibility(View.VISIBLE);
-                    btnRigthAudio.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            msg.getMediaMessage().setLocalPathSaved(saveAudio(msg));
-                            if(audioCurrentPlaying == null) {
-                                audioCurrentPlaying = msg.getMediaMessage().getLocalPathSaved();
-                            } else if(!audioCurrentPlaying.equals(msg.getMediaMessage().getLocalPathSaved())) {
-                                File fcurrent = new File(audioCurrentPlaying);
-                                if(fcurrent.exists()) {
-                                    fcurrent.delete();
-                                }
-                            }
-                            playAudio(msg.getMediaMessage().getLocalPathSaved());
-                        }
-                    });
-                }
+                printOtherMessage(convertView,msg);
+                // Messaggio ricevuto
             }
-
-            titolo.setText(msg.getBody());
             return convertView;
         }
 
@@ -343,6 +288,103 @@ public class ActivityChat extends AppCompatActivity {
             return bitmap;
         }
 
+
+        private void printMeMessage(View cw,Message msg) {
+            ImageView imgMexLeft;
+            ImageButton btnLeftAudio;
+
+            TextView titolo = (TextView)cw.findViewById(R.id.text_left_message);
+            TextView dateMessage = (TextView) cw.findViewById(R.id.date_left_mex);
+            imgMexLeft = (ImageView) cw.findViewById(R.id.imageMsgLeft);
+            btnLeftAudio = (ImageButton) cw.findViewById(R.id.btnSoundLeft);
+
+            if(btnLeftAudio != null) {
+                btnLeftAudio.getLayoutParams().width = 0;
+                btnLeftAudio.getLayoutParams().height = 0;
+                btnLeftAudio.setVisibility(View.INVISIBLE);
+            }
+            if(msg.getMediaMessage() == null) {
+                imgMexLeft.setVisibility(View.INVISIBLE);
+                imgMexLeft.getLayoutParams().height = 0;
+                imgMexLeft.getLayoutParams().width = 0;
+            } else if (msg.getMediaMessage() != null && msg.getMediaMessage().getTipo().equals("image")) {
+                imgMexLeft.setVisibility(View.VISIBLE);
+                imgMexLeft.setImageBitmap(convertStringToImage(msg.getMediaMessage().getStream()));
+                imgMexLeft.getLayoutParams().height = ALTEZZA_IMG_MEX;
+                imgMexLeft.getLayoutParams().width = LARGHEZZA_IMG_MEX;
+            } else if (msg.getMediaMessage() != null && msg.getMediaMessage().getTipo().equals("audio")) {
+                imgMexLeft.getLayoutParams().height = 0;
+                imgMexLeft.getLayoutParams().width = 0;
+                btnLeftAudio.getLayoutParams().width = ALTEZZA_AUD;
+                btnLeftAudio.getLayoutParams().height = LARGHEZZA_AUD;
+                btnLeftAudio.setVisibility(View.VISIBLE);
+                btnLeftAudio.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        msg.getMediaMessage().setLocalPathSaved(saveAudio(msg));
+                        if(audioCurrentPlaying == null) {
+                            audioCurrentPlaying = msg.getMediaMessage().getLocalPathSaved();
+                        } else if(!audioCurrentPlaying.equals(msg.getMediaMessage().getLocalPathSaved())) {
+                            File fcurrent = new File(audioCurrentPlaying);
+                            if(fcurrent.exists()) {
+                                fcurrent.delete();
+                            }
+                        }
+                        playAudio(msg.getMediaMessage().getLocalPathSaved());
+                    }
+                });
+            }
+            titolo.setText(msg.getBody());
+            dateMessage.setText(msg.getDateMessage());
+        }
+
+        private void printOtherMessage(View cw,Message msg) {
+            ImageButton btnRigthAudio;
+            ImageView imgMexRigth;
+            TextView titolo = (TextView)cw.findViewById(R.id.text_rigth_message);
+            TextView dateMessage = (TextView) cw.findViewById(R.id.dateRigthMessage);
+            imgMexRigth = (ImageView) cw.findViewById(R.id.imageMsgRigth);
+            btnRigthAudio = (ImageButton) cw.findViewById(R.id.btnSoundRigth);
+            if(btnRigthAudio != null) {
+                btnRigthAudio.getLayoutParams().width = 0;
+                btnRigthAudio.getLayoutParams().height = 0;
+                btnRigthAudio.setVisibility(View.INVISIBLE);
+            }
+            if(msg.getMediaMessage() == null) {
+                imgMexRigth.setVisibility(View.INVISIBLE);
+                imgMexRigth.getLayoutParams().height = 0;
+                imgMexRigth.getLayoutParams().width = 0;
+            }else if (msg.getMediaMessage() != null && msg.getMediaMessage().getTipo().equals("image")) {
+                imgMexRigth.setVisibility(View.VISIBLE);
+                imgMexRigth.setImageBitmap(convertStringToImage(msg.getMediaMessage().getStream()));
+                imgMexRigth.getLayoutParams().height = ALTEZZA_IMG_MEX;
+                imgMexRigth.getLayoutParams().width = LARGHEZZA_IMG_MEX;
+            } else if (msg.getMediaMessage() != null && msg.getMediaMessage().getTipo().equals("audio")) {
+                // To do
+                imgMexRigth.getLayoutParams().height = 0;
+                imgMexRigth.getLayoutParams().width = 0;
+                btnRigthAudio.getLayoutParams().width = ALTEZZA_AUD;
+                btnRigthAudio.getLayoutParams().height = LARGHEZZA_AUD;
+                btnRigthAudio.setVisibility(View.VISIBLE);
+                btnRigthAudio.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        msg.getMediaMessage().setLocalPathSaved(saveAudio(msg));
+                        if(audioCurrentPlaying == null) {
+                            audioCurrentPlaying = msg.getMediaMessage().getLocalPathSaved();
+                        } else if(!audioCurrentPlaying.equals(msg.getMediaMessage().getLocalPathSaved())) {
+                            File fcurrent = new File(audioCurrentPlaying);
+                            if(fcurrent.exists()) {
+                                fcurrent.delete();
+                            }
+                        }
+                        playAudio(msg.getMediaMessage().getLocalPathSaved());
+                    }
+                });
+            }
+            titolo.setText(msg.getBody());
+            dateMessage.setText(msg.getDateMessage());
+        }
 
     }
 
