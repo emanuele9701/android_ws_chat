@@ -27,7 +27,7 @@
         android:id="@+id/compose_message"
         android:layout_width="390dp"
         android:layout_height="81dp"
-        android:layout_marginTop="7dp"
+        android:layout_marginTop="3dp"
         android:layout_marginBottom="4dp"
         android:background="#414DD0E1"
         android:ems="10"
@@ -43,25 +43,26 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/listMessageContainer"
         android:name="com.example.wschat.ListMessages"
-        android:layout_width="386dp"
-        android:layout_height="487dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginBottom="7dp"
+        android:layout_width="388dp"
+        android:layout_height="483dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="3dp"
         app:layout_constraintBottom_toTopOf="@+id/compose_message"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.48"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/fragmentContainerView2" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView2"
         android:name="com.example.wschat.HeaderChat"
-        android:layout_width="406dp"
-        android:layout_height="39dp"
+        android:layout_width="405dp"
+        android:layout_height="34dp"
         android:layout_marginEnd="4dp"
         android:layout_marginBottom="18dp"
+        android:layout_marginTop="5dp"
         app:layout_constraintBottom_toTopOf="@+id/listMessageContainer"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

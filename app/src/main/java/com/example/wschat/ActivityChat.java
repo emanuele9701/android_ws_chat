@@ -183,9 +183,12 @@ public class ActivityChat extends AppCompatActivity {
             public void onResponse(Call<ChatInfo> call, Response<ChatInfo> response) {
                 Log.d(ActivityChat.class.toString(),"Recupero info chat: OK");
                 ChatInfo cInfo = response.body();
-                //Toast.makeText(getApplicationContext(),"Info recuperate",Toast.LENGTH_LONG).show();
+
                 ImageView imageProfilo = (ImageView) findViewById(R.id.profiloImage);
                 TextView infoNameChat = findViewById(R.id.infoNomeChat);
+                TextView infoNumeroChat = findViewById(R.id.infoNumeroChat);
+
+                infoNumeroChat.setText(cInfo.getNumeroFormattato());
                 infoNameChat.setText(String.valueOf(cInfo.getName()));
                 if(cInfo.getUrlImage() != null) {
                     DownloadImage dImage = new DownloadImage(imageProfilo,cInfo.getUrlImage());
