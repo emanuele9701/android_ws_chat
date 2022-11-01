@@ -27,8 +27,11 @@ public interface ServiceChat {
     @GET("chats/allCountChat")
     Call<HashMap<String,Integer>> countChats();
 
-    @GET("chats/getChatsInfo/{chatId}")
-    Call<ChatInfo> infoChat(@Path("chatId") int chatId);
+    @GET("chats/getChatsInfo/{chatId}/{limit}")
+    Call<ChatInfo> infoChat(@Path("chatId") int chatId,@Path("limit") int limit);
+
+    @GET("chats/getChatsInfo/{chatId}/{limit}/{onlyInfoChat}")
+    Call<ChatInfo> onlyInfoChat(@Path("chatId") int chatId,@Path("limit") int limit,@Path("onlyInfoChat") boolean onlyInfoChat);
 
     @GET("chats/search/{what}")
     Call<List<Chat>> searchChat(@Path("what") String what);

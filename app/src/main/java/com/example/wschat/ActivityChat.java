@@ -25,6 +25,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,10 +58,12 @@ public class ActivityChat extends AppCompatActivity {
     static final int LARGHEZZA_IMG_MEX = 300;
     static final int ALTEZZA_AUD = 150;
     static final int LARGHEZZA_AUD = 150;
+    static final int LIMIT_MEX = 35;
     private ChannelEvent event;
     static String EVENT_NEW_MESSAGE;
     MediaPlayer mediaPlayer;
     String audioCurrentPlaying;
+
     int chatId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +83,7 @@ public class ActivityChat extends AppCompatActivity {
         this.messageCompose = (EditText) findViewById(R.id.compose_message);
         //this.messageCompose.setText(R.string.writeMessage);
         list_all_message = (ListView) findViewById(R.id.allMessages);
-
+        TableLayout tbHeaderChat = (TableLayout) findViewById(R.id.tableHeaderChat);
         messageCompose.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -103,6 +106,16 @@ public class ActivityChat extends AppCompatActivity {
             }
         });
         ascoltoEvtNewMessage();
+        Toast.makeText(getApplicationContext(),"Sono visualizzati soltanto gli ultimi 35 messaggi",Toast.LENGTH_LONG).show();
+
+        tbHeaderChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent chatIntent = new Intent(getApplicationContext(),ActivityChatInfo.class);
+                chatIntent.putExtra("IdListChat",chatId);
+                startActivity(chatIntent);
+            }
+        });
     }
 
 
@@ -177,7 +190,7 @@ public class ActivityChat extends AppCompatActivity {
 
     private void recuperoInfoChat(int chatId) {
         Log.d(ActivityChat.class.toString(),"Recupero info chat");
-        Call<ChatInfo> infoChat = MainActivity.sc.infoChat(chatId);
+        Call<ChatInfo> infoChat = MainActivity.sc.infoChat(chatId,LIMIT_MEX);
         infoChat.enqueue(new Callback<ChatInfo>() {
             @Override
             public void onResponse(Call<ChatInfo> call, Response<ChatInfo> response) {

@@ -14,5 +14,14 @@
     <string name="search_btn_dialog">Ricerca</string>
     <string name="reset_btn">Annulla</string>
     <string name="annulla_ricerca">Ripristina ricerca</string>
+    <string name="nome_chat">Nome chat</string>
+    <string name="numero_chat">Numero</string>
+    <string name="yes_block">Bloccata</string>
+    <string name="no_block">Sbloccata</string>
+    <string name="bloccata">Bloccata</string>
+    <string name="hasWhatsApp">WhatsApp</string>
+
     <string name="todo">TODO</string>
+    <string name="yes_whatsapp">Si</string>
+    <string name="no_whatsapp">No</string>
 </resources>

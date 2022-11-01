@@ -23,13 +23,15 @@ public class ChatInfo {
     @SerializedName("listMex")
     private List<Message> messages;
 
+    @SerializedName("haveWhatsApp")
+    private int haveWhatsApp;
+
+    @SerializedName("isBlocked")
+    private int isBlocked;
+
 
     public String getName() {
         return name;
-    }
-
-    public String getLastUpdate() {
-        return lastUpdate;
     }
 
     public String getNumeroFormattato() {
@@ -44,7 +46,11 @@ public class ChatInfo {
         return messages;
     }
 
-    public int getIdChat() {
-        return idChat;
+    public int getHaveWhatsApp() {
+        return haveWhatsApp;
+    }
+
+    public int getIsBlocked() {
+        return isBlocked;
     }
 }
