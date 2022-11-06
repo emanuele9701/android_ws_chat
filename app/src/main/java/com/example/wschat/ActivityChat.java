@@ -1,6 +1,9 @@
 package com.example.wschat;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +14,7 @@ import android.media.AudioManager;
 import android.media.MediaDataSource;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Base64;
@@ -38,6 +42,7 @@ import com.pusher.client.channel.SubscriptionEventListener;
 
 import java.io.File;
 import java.io.FileDescriptor;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -303,10 +308,28 @@ public class ActivityChat extends AppCompatActivity {
             byte[] decodedString = Base64.decode(base64, Base64.DEFAULT);
             // Bitmap Image
             Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-
             return bitmap;
         }
 
+        private File storeImageBitmpa(Bitmap image,String name) {
+             String storePath = getFilesDir().getPath() + "/"+name;
+             File pictureFile = new File(storePath);
+            if (pictureFile == null) {
+                Log.d(TAG,
+                        "Error creating media file, check storage permissions: ");// e.getMessage());
+                return null;
+            }
+            try {
+                FileOutputStream fos = new FileOutputStream(pictureFile);
+                image.compress(Bitmap.CompressFormat.PNG, 90, fos);
+                fos.close();
+            } catch (FileNotFoundException e) {
+                Log.d(TAG, "File not found: " + e.getMessage());
+            } catch (IOException e) {
+                Log.d(TAG, "Error accessing file: " + e.getMessage());
+            }
+            return pictureFile;
+        }
 
         private void printMeMessage(View cw,Message msg) {
             ImageView imgMexLeft;
@@ -368,6 +391,7 @@ public class ActivityChat extends AppCompatActivity {
             btnRigthAudio = (ImageButton) cw.findViewById(R.id.btnSoundRigth);
 
 
+
             if(btnRigthAudio != null) {
                 btnRigthAudio.getLayoutParams().width = 0;
                 btnRigthAudio.getLayoutParams().height = 0;
@@ -378,10 +402,24 @@ public class ActivityChat extends AppCompatActivity {
                 imgMexRigth.getLayoutParams().height = 0;
                 imgMexRigth.getLayoutParams().width = 0;
             }else if (msg.getMediaMessage() != null && msg.getMediaMessage().getTipo().equals("image")) {
+                Bitmap img = convertStringToImage(msg.getMediaMessage().getStream());
                 imgMexRigth.setVisibility(View.VISIBLE);
-                imgMexRigth.setImageBitmap(convertStringToImage(msg.getMediaMessage().getStream()));
+                imgMexRigth.setImageBitmap(img);
                 imgMexRigth.getLayoutParams().height = ALTEZZA_IMG_MEX;
                 imgMexRigth.getLayoutParams().width = LARGHEZZA_IMG_MEX;
+                imgMexRigth.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        File f = storeImageBitmpa(img,msg.getMediaMessage().getNome());
+                        if(f.exists()) {
+                            Intent intent = new Intent(Intent.ACTION_VIEW)//
+                                    .setDataAndType(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ?
+                                                    FileProvider.getUriForFile(getApplicationContext(),getPackageName() + ".provider", f) : Uri.fromFile(f),
+                                            "image/*").addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            startActivity(intent);
+                        }
+                    }
+                });
             } else if (msg.getMediaMessage() != null && msg.getMediaMessage().getTipo().equals("audio")) {
                 // To do
                 imgMexRigth.getLayoutParams().height = 0;

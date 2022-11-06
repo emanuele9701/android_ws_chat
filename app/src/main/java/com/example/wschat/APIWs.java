@@ -11,7 +11,7 @@ public class APIWs {
 
     public static Retrofit getClient() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://192.168.1.3/bot_whatsapp/api/whatsapp_chats_api_v3/public/index.php/api/")
+                .baseUrl(MainActivity.urlWs)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
