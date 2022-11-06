@@ -29,6 +29,9 @@ public class ChatInfo {
     @SerializedName("isBlocked")
     private int isBlocked;
 
+    @SerializedName("about")
+    private String stato;
+
 
     public String getName() {
         return name;
@@ -52,5 +55,17 @@ public class ChatInfo {
 
     public int getIsBlocked() {
         return isBlocked;
+    }
+
+    public String getLastUpdate() {
+        return lastUpdate;
+    }
+
+    public int getIdChat() {
+        return idChat;
+    }
+
+    public String getStato() {
+        return stato;
     }
 }

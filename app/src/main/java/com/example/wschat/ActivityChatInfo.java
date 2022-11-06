@@ -45,11 +45,14 @@ public class ActivityChatInfo extends AppCompatActivity {
                 TextView bloccato = findViewById(R.id.cInfo_bloccata);
                 TextView hasWhatsApp = findViewById(R.id.cInfo_hasWhatsApp);
                 TextView telefono = findViewById(R.id.cInfo_numero);
+                TextView statoWs = findViewById(R.id.cInfo_stato);
                 ImageView imageProfilo = (ImageView) findViewById(R.id.cInfo_imageProfilo);
 
 
                 nome.setText(cInfo.getName());
                 telefono.setText(cInfo.getNumeroFormattato());
+
+                statoWs.setText(cInfo.getStato());
 
                 if(cInfo.getIsBlocked() == 1) {
                     bloccato.setText(R.string.yes_block);

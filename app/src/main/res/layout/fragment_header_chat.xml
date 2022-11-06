@@ -20,6 +20,7 @@
                 android:layout_width="40dp"
                 android:layout_height="match_parent"
                 tools:src="@tools:sample/avatars" />
+
             <TableLayout
                 android:layout_width="match_parent"
                 android:layout_height="36dp">
@@ -27,21 +28,23 @@
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
-                <TextView
-                    android:id="@+id/infoNomeChat"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="-" />
+
+                    <TextView
+                        android:id="@+id/infoNomeChat"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="-" />
                 </TableRow>
+
                 <TableRow
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/infoNumeroChat"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="-" />
+                    <TextView
+                        android:id="@+id/infoNumeroChat"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="-" />
                 </TableRow>
             </TableLayout>
 

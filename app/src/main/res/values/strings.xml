@@ -24,4 +24,5 @@
     <string name="todo">TODO</string>
     <string name="yes_whatsapp">Si</string>
     <string name="no_whatsapp">No</string>
+    <string name="stato">"Stato "</string>
 </resources>
