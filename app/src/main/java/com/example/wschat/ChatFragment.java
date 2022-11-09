@@ -86,7 +86,7 @@ public class ChatFragment extends Fragment {
 
                     for (Chat c :
                             listaChat) {
-                        listaItemChat.add(new ChatItem(null,c.getName(),c.getLastMessage(),c.getData(),c.getChatId()));
+                        listaItemChat.add(new ChatItem(null,c.getName(),c.getLastMessage(),c.getData(),c.getChatId(),c.getNewMessage()));
                     }
                     if(MainActivity.oldChat == null) {
                         MainActivity.oldChat = listaItemChat;

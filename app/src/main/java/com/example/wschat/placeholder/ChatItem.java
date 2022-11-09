@@ -8,12 +8,14 @@ public class ChatItem {
     public String dateTime;
     public String body;
     public int WsChatId;
-    public ChatItem(ImageView image, String content, String body,String dateTime, int WsChatId) {
+    public int newMex;
+    public ChatItem(ImageView image, String content, String body,String dateTime, int WsChatId,int newMex) {
         this.image = image;
         this.content = content;
         this.body = body;
         this.dateTime = dateTime;
         this.WsChatId = WsChatId;
+        this.newMex = newMex;
     }
 
     @Override

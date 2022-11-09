@@ -10,13 +10,10 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.media.AudioManager;
-import android.media.MediaDataSource;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,11 +38,9 @@ import com.example.wschat.entity.Message;
 import com.pusher.client.channel.SubscriptionEventListener;
 
 import java.io.File;
-import java.io.FileDescriptor;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.List;
 
@@ -64,6 +59,8 @@ public class ActivityChat extends AppCompatActivity {
     static final int ALTEZZA_AUD = 150;
     static final int LARGHEZZA_AUD = 150;
     static final int LIMIT_MEX = 35;
+    static final int ALTEZZA_RD_IC = 45;
+    static final int LARGHEZZA_RD_IC = 45;
     private ChannelEvent event;
     static String EVENT_NEW_MESSAGE;
     MediaPlayer mediaPlayer;
@@ -332,13 +329,17 @@ public class ActivityChat extends AppCompatActivity {
         }
 
         private void printMeMessage(View cw,Message msg) {
-            ImageView imgMexLeft;
+            ImageView imgMexLeft, img_spunta_read;
+
             ImageButton btnLeftAudio;
 
             TextView titolo = (TextView)cw.findViewById(R.id.text_left_message);
             TextView dateMessage = (TextView) cw.findViewById(R.id.date_left_mex);
             imgMexLeft = (ImageView) cw.findViewById(R.id.imageMsgLeft);
             btnLeftAudio = (ImageButton) cw.findViewById(R.id.btnSoundLeft);
+            img_spunta_read = (ImageView) cw.findViewById(R.id.img_spunta_read_left);
+            img_spunta_read.getLayoutParams().height = ALTEZZA_RD_IC;
+            img_spunta_read.getLayoutParams().width = LARGHEZZA_RD_IC;
 
             if(btnLeftAudio != null) {
                 btnLeftAudio.getLayoutParams().width = 0;
@@ -350,10 +351,24 @@ public class ActivityChat extends AppCompatActivity {
                 imgMexLeft.getLayoutParams().height = 0;
                 imgMexLeft.getLayoutParams().width = 0;
             } else if (msg.getMediaMessage() != null && msg.getMediaMessage().getTipo().equals("image")) {
+                Bitmap img = convertStringToImage(msg.getMediaMessage().getStream());
                 imgMexLeft.setVisibility(View.VISIBLE);
-                imgMexLeft.setImageBitmap(convertStringToImage(msg.getMediaMessage().getStream()));
+                imgMexLeft.setImageBitmap(img);
                 imgMexLeft.getLayoutParams().height = ALTEZZA_IMG_MEX;
                 imgMexLeft.getLayoutParams().width = LARGHEZZA_IMG_MEX;
+                imgMexLeft.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        File f = storeImageBitmpa(img,msg.getMediaMessage().getNome());
+                        if(f.exists()) {
+                            Intent intent = new Intent(Intent.ACTION_VIEW)//
+                                    .setDataAndType(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N ?
+                                                    FileProvider.getUriForFile(getApplicationContext(),getPackageName() + ".provider", f) : Uri.fromFile(f),
+                                            "image/*").addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            startActivity(intent);
+                        }
+                    }
+                });
             } else if (msg.getMediaMessage() != null && msg.getMediaMessage().getTipo().equals("audio")) {
                 imgMexLeft.getLayoutParams().height = 0;
                 imgMexLeft.getLayoutParams().width = 0;
@@ -378,6 +393,11 @@ public class ActivityChat extends AppCompatActivity {
             }
             titolo.setText(msg.getBody());
             dateMessage.setText(msg.getDateMessage());
+            if(msg.getRead() == 1) {
+                img_spunta_read.setImageResource(R.drawable.vicon_green);
+            } else {
+                img_spunta_read.setImageResource(R.drawable.vicon_white);
+            }
         }
 
         private void printOtherMessage(View cw,Message msg) {
@@ -389,8 +409,6 @@ public class ActivityChat extends AppCompatActivity {
 
             imgMexRigth = (ImageView) cw.findViewById(R.id.imageMsgRigth);
             btnRigthAudio = (ImageButton) cw.findViewById(R.id.btnSoundRigth);
-
-
 
             if(btnRigthAudio != null) {
                 btnRigthAudio.getLayoutParams().width = 0;

@@ -20,6 +20,12 @@ public class Message {
     @SerializedName("mediaFile")
     private int mediaId;
 
+    @SerializedName("hasNewMex")
+    private int newMessage;
+
+    @SerializedName("read")
+    private int read;
+
     @SerializedName("mittente")
     private String mittente;
 
@@ -45,6 +51,14 @@ public class Message {
 
     public String getMittente() {
         return mittente;
+    }
+
+    public int getNewMessage() {
+        return newMessage;
+    }
+
+    public int getRead() {
+        return read;
     }
 
     public Message(String body, int fromMe) {

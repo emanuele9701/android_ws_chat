@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private Button resetSearch;
     static RecyclerView mainRecyclerView;
     ImageButton refreshChat;
-    public static final String urlWs = "http://192.168.178.251/bot_whatsapp/api/whatsapp_chats_api_v3/public/api/";
+    public static final String urlWs = "http://192.168.1.3/bot_whatsapp/api/whatsapp_chats_api_v3/public/api/";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
                 for (Chat c :
                         listaChat) {
-                    listaItemChat.add(new ChatItem(null,c.getName(),c.getLastMessage(),c.getData(),c.getChatId()));
+                    listaItemChat.add(new ChatItem(null,c.getName(),c.getLastMessage(),c.getData(),c.getChatId(),c.getNewMessage()));
                 }
                 if(MainActivity.oldChat == null) {
                     MainActivity.oldChat = listaItemChat;
@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private ChatItem getChatPositionList(int position) {
-        ChatItem rt = new ChatItem(null,null,null,null,0);
+        ChatItem rt = new ChatItem(null,null,null,null,0,0);
         RecyclerView rv = findViewById(R.id.list);
         List<ChatItem> listItem = ((MyChatRecyclerViewAdapter) rv.getAdapter()).getListItem();
         rt = listItem.get(position);
@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
                 for (Chat cList :
                     listaResponse) {
                    if(cList.getName().toLowerCase().contains(ricerca.toLowerCase())) {
-                        ChatItem c = new ChatItem(null,cList.getName(),cList.getLastMessage(),cList.getData(),cList.getChatId());
+                        ChatItem c = new ChatItem(null,cList.getName(),cList.getLastMessage(),cList.getData(),cList.getChatId(),cList.getNewMessage());
                         if(!listItemSearched.contains(c)) {
                             listItemSearched.add(c);
                         }
