@@ -38,12 +38,14 @@
                 android:id="@+id/textView1"
                 android:layout_width="92dp"
                 android:layout_height="match_parent"
+                android:textColor="#000000"
                 android:text="@string/nome_chat" />
 
             <TextView
                 android:id="@+id/cInfo_nome"
                 android:layout_height="match_parent"
                 android:text="-"
+                android:textColor="#000000"
                 android:textAlignment="viewStart" />
         </TableRow>
 
@@ -57,12 +59,14 @@
                 android:id="@+id/textView2"
                 android:layout_width="92dp"
                 android:layout_height="match_parent"
+                android:textColor="#000000"
                 android:text="@string/numero_chat" />
 
             <TextView
                 android:id="@+id/cInfo_numero"
                 android:layout_width="172dp"
                 android:layout_height="match_parent"
+                android:textColor="#000000"
                 android:text="-"
                 android:textAlignment="viewStart" />
         </TableRow>
@@ -77,12 +81,14 @@
                 android:id="@+id/textView3"
                 android:layout_width="92dp"
                 android:layout_height="match_parent"
+                android:textColor="#000000"
                 android:text="@string/hasWhatsApp" />
 
             <TextView
                 android:id="@+id/cInfo_hasWhatsApp"
                 android:layout_width="172dp"
                 android:layout_height="match_parent"
+                android:textColor="#000000"
                 android:text="-"
                 android:textAlignment="viewStart" />
         </TableRow>
@@ -96,12 +102,14 @@
             <TextView
                 android:id="@+id/textView4"
                 android:layout_width="92dp"
+                android:textColor="#000000"
                 android:layout_height="match_parent"
                 android:text="@string/bloccata" />
 
             <TextView
                 android:id="@+id/cInfo_bloccata"
                 android:layout_width="172dp"
+                android:textColor="#000000"
                 android:layout_height="match_parent"
                 android:text="-"
                 android:textAlignment="viewStart" />
@@ -116,12 +124,14 @@
             <TextView
                 android:id="@+id/textView5"
                 android:layout_width="92dp"
+                android:textColor="#000000"
                 android:layout_height="match_parent"
                 android:text="@string/stato" />
 
             <TextView
                 android:id="@+id/cInfo_stato"
                 android:layout_width="172dp"
+                android:textColor="#000000"
                 android:layout_height="match_parent"
                 android:text="-"
                 android:textAlignment="viewStart" />

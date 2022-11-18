@@ -1,11 +1,13 @@
 package com.example.wschat;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -16,7 +18,6 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 import com.example.wschat.Dati.ServiceChat;
 import com.example.wschat.classes.ChannelEvent;
-import com.example.wschat.classes.MyJSONParse;
 import com.example.wschat.classes.PusherEvent;
 import com.example.wschat.entity.Chat;
 import com.example.wschat.gestureCapture.RecyclerItemClickListener;
@@ -33,7 +34,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import com.example.wschat.static_functions.MyStaticFunctions;
+import com.example.wschat.functions.MyStaticFunctions;
 import com.pusher.client.channel.SubscriptionEventListener;
 
 public class MainActivity extends AppCompatActivity {
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     static ServiceChat sc;
     static ChannelEvent event;
     static PusherEvent pusher;
-    MyStaticFunctions msf;
+    static MyStaticFunctions msf;
     Call<List<Chat>> clListChat;
     static boolean darkMode;
     static AlertDialog.Builder bldSearch;
@@ -51,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private Button resetSearch;
     static RecyclerView mainRecyclerView;
     ImageButton refreshChat;
-    public static final String urlWs = "http://192.168.1.3/bot_whatsapp/api/whatsapp_chats_api_v3/public/api/";
+    private ConstraintLayout layoutPage;
+    public static final String urlWs = "http://100.78.38.90/bot_whatsapp/api/whatsapp_chats_api_v3/public/api/";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,13 +66,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         darkMode = msf.checkDarkTheme();
+        layoutPage = (ConstraintLayout) findViewById(R.id.layoutPageMain);
         ping();
         loadComponents();
         getCountChats();
         setOnClickList();
         loadServices();
-
+        if(darkMode) {
+            layoutPage.setBackgroundColor(Color.WHITE);
+        }
     }
+
+
 
     private void loadServices() {
         pusher = new PusherEvent(CLUSTER_PUSHER,APIKEY_PUSHER);

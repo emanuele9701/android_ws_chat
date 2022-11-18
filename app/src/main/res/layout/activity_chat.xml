@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
     tools:context=".ActivityChat">
 
     <Button
@@ -45,8 +44,8 @@
         android:name="com.example.wschat.ListMessages"
         android:layout_width="388dp"
         android:layout_height="483dp"
-        android:layout_marginTop="0dp"
         android:layout_marginLeft="5dp"
+        android:layout_marginTop="0dp"
         android:layout_marginBottom="3dp"
         app:layout_constraintBottom_toTopOf="@+id/compose_message"
         app:layout_constraintEnd_toEndOf="parent"

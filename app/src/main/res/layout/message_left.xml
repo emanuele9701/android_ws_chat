@@ -26,6 +26,7 @@
         android:layout_marginTop="4dp"
         android:layout_marginEnd="1dp"
         android:layout_marginRight="1dp"
+        android:textColor="#000000"
         android:text="@string/lblFromMe"
         android:textStyle="bold" />
 
@@ -36,6 +37,7 @@
         android:layout_below="@+id/btnSoundLeft"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
+        android:textColor="#000000"
         android:layout_alignParentRight="true"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="0dp"
@@ -58,6 +60,7 @@
         android:id="@+id/date_left_mex"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#000000"
         android:layout_below="@+id/text_left_message"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="1dp"

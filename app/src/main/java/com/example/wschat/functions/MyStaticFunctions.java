@@ -1,4 +1,4 @@
-package com.example.wschat.static_functions;
+package com.example.wschat.functions;
 
 import android.content.Context;
 import android.content.res.Configuration;
